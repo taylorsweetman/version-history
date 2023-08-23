@@ -1,6 +1,6 @@
 #!/usr/bin/env npx ts-node --esm
 
-import { initGit, getLastNCommits } from '../lib/git';
+import { initGit, getLastNCommits, getVersionLog } from '../lib/git';
 import { Command } from 'commander';
 
 const program = new Command();
@@ -17,7 +17,16 @@ program
     console.log('--- Starting ---');
     const git = await initGit();
     const lastNCommits = await getLastNCommits(git, options.number);
-    console.log(lastNCommits);
+    const startingCommit = lastNCommits[0].sha;
+
+    const versionPromises = lastNCommits.map((commit) =>
+      getVersionLog(git, commit)
+    );
+
+    const result = await Promise.all(versionPromises);
+
+    console.log(result);
+    await git.checkout(startingCommit);
     console.log('--- Complete ---');
   });
 

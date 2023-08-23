@@ -1,6 +1,8 @@
 import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git';
+import { readFileSync } from 'fs';
 
 export type SimpleLog = { message: string; sha: string };
+export type VersionLog = SimpleLog & { version: string };
 
 export const initGit = async (): Promise<SimpleGit> => {
   const options: Partial<SimpleGitOptions> = {
@@ -28,4 +30,14 @@ export const getLastNCommits = async (
   }));
 
   return simpleLogs;
+};
+
+export const getVersionLog = async (
+  git: SimpleGit,
+  { message, sha }: SimpleLog
+): Promise<VersionLog> => {
+  await git.checkout(sha);
+  const packageJson = readFileSync('package.json', 'utf-8');
+  const { version } = JSON.parse(packageJson);
+  return { message, sha, version };
 };
