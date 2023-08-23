@@ -1,14 +1,24 @@
 import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git';
 
-// const options: Partial<SimpleGitOptions> = {
-//   baseDir: process.cwd(),
-//   binary: 'git',
-//   maxConcurrentProcesses: 6,
-//   trimmed: false,
-// };
+const initGit = async (): Promise<SimpleGit> => {
+  const options: Partial<SimpleGitOptions> = {
+    baseDir: process.cwd(),
+    binary: 'git',
+    maxConcurrentProcesses: 6,
+    trimmed: false,
+  };
 
-// when setting all options in a single object
-// const git: SimpleGit = simpleGit(options);
+  const git = simpleGit(options);
+  return git;
+};
 
-// // or split out the baseDir, supported for backward compatibility
-// const git: SimpleGit = simpleGit('/some/path', { binary: 'git' });
+const main = async () => {
+  console.log('--- Starting ---');
+  const git = await initGit();
+  const { all } = await git.log();
+
+  const simpleLog = all.map((log) => log.message);
+  console.log(simpleLog);
+};
+
+main();
