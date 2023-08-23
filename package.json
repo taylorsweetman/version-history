@@ -1,14 +1,16 @@
 {
   "name": "version-history",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node ."
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "simple-git": "^3.19.1"
+    "simple-git": "^3.19.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
   }
 }

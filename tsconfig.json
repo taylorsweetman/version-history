@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "moduleResolution": "Node",
+    "baseUrl": "./",
+    "paths": {
+      "*": ["*"]
+    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "strictNullChecks": true
+  },
+  "ts-node": {
+    "transpileOnly": true
+  }
+}
