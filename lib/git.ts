@@ -8,7 +8,7 @@ export const initGit = async (): Promise<SimpleGit> => {
   const options: Partial<SimpleGitOptions> = {
     baseDir: process.cwd(),
     binary: 'git',
-    maxConcurrentProcesses: 6,
+    maxConcurrentProcesses: 1,
     trimmed: false,
   };
 
@@ -39,5 +39,6 @@ export const getVersionLog = async (
   await git.checkout(sha);
   const packageJson = readFileSync('package.json', 'utf-8');
   const { version } = JSON.parse(packageJson);
+
   return { message, sha, version };
 };

@@ -1,6 +1,12 @@
 #!/usr/bin/env npx ts-node --esm
 
-import { initGit, getLastNCommits, getVersionLog } from '../lib/git';
+import { formatVersionLog } from '../lib/formatting';
+import {
+  initGit,
+  getLastNCommits,
+  getVersionLog,
+  VersionLog,
+} from '../lib/git';
 import { Command } from 'commander';
 
 const program = new Command();
@@ -14,20 +20,18 @@ program
   .description('Check the version history of the repo')
   .option('-n, --number <int>', 'number of commits to include')
   .action(async (options) => {
-    console.log('--- Starting ---');
     const git = await initGit();
     const lastNCommits = await getLastNCommits(git, options.number);
-    const startingCommit = lastNCommits[0].sha;
 
-    const versionPromises = lastNCommits.map((commit) =>
-      getVersionLog(git, commit)
-    );
+    const result: VersionLog[] = [];
 
-    const result = await Promise.all(versionPromises);
+    for (const commit of lastNCommits) {
+      const versionLog = await getVersionLog(git, commit);
+      result.push(versionLog);
+    }
 
-    console.log(result);
-    await git.checkout(startingCommit);
-    console.log('--- Complete ---');
+    await git.checkout('master');
+    console.log(formatVersionLog(result));
   });
 
 program.parse();
