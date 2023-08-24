@@ -4,6 +4,8 @@ import { prettyPrint } from '../lib/formatting';
 import { initGit, getLastNCommits, toVersionLog, VersionLog } from '../lib/git';
 import { Command } from 'commander';
 
+const DEFAULT_NUMBER_OF_COMMITS = 10;
+
 const program = new Command();
 
 program
@@ -17,7 +19,10 @@ program
   .action(async (options) => {
     const git = await initGit();
     const startingBranch = (await git.branch()).current;
-    const lastNCommits = await getLastNCommits(git, options.number);
+    const lastNCommits = await getLastNCommits(
+      git,
+      Number(options.number) || DEFAULT_NUMBER_OF_COMMITS
+    );
 
     const versionPromises = lastNCommits.map((simpleLog) =>
       toVersionLog(git, simpleLog)
