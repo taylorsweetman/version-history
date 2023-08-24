@@ -19,12 +19,10 @@ program
     const startingBranch = (await git.branch()).current;
     const lastNCommits = await getLastNCommits(git, options.number);
 
-    const versionLogs: VersionLog[] = [];
-
-    for (const simpleLog of lastNCommits) {
-      const versionLog = await toVersionLog(git, simpleLog);
-      versionLogs.push(versionLog);
-    }
+    const versionPromises = lastNCommits.map((simpleLog) =>
+      toVersionLog(git, simpleLog)
+    );
+    const versionLogs = await Promise.all(versionPromises);
 
     if (startingBranch) await git.checkout(startingBranch);
     prettyPrint(versionLogs);
