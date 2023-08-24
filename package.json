@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "author": "",
   "license": "ISC",
+  "scripts": {
+    "postversion": "git push && git push --tags"
+  },
   "bin": {
     "version-history": "bin/index.ts"
   },
