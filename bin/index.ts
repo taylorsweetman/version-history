@@ -1,6 +1,6 @@
 #!/usr/bin/env npx ts-node --esm
 
-import { formatVersionLog } from '../lib/formatting';
+import { formatVersionLog, prettyPrint } from '../lib/formatting';
 import {
   initGit,
   getLastNCommits,
@@ -31,7 +31,7 @@ program
     }
 
     await git.checkout('master');
-    console.log(formatVersionLog(result));
+    prettyPrint(formatVersionLog(result));
   });
 
 program.parse();
