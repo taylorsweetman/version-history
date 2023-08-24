@@ -1,12 +1,7 @@
 #!/usr/bin/env npx ts-node --esm
 
-import { formatVersionLog, prettyPrint } from '../lib/formatting';
-import {
-  initGit,
-  getLastNCommits,
-  getVersionLog,
-  VersionLog,
-} from '../lib/git';
+import { prettyPrint } from '../lib/formatting';
+import { initGit, getLastNCommits, toVersionLog, VersionLog } from '../lib/git';
 import { Command } from 'commander';
 
 const program = new Command();
@@ -21,18 +16,18 @@ program
   .option('-n, --number <int>', 'number of commits to include')
   .action(async (options) => {
     const git = await initGit();
-    const currentBranch = (await git.branch()).current;
+    const startingBranch = (await git.branch()).current;
     const lastNCommits = await getLastNCommits(git, options.number);
 
-    const result: VersionLog[] = [];
+    const versionLogs: VersionLog[] = [];
 
-    for (const commit of lastNCommits) {
-      const versionLog = await getVersionLog(git, commit);
-      result.push(versionLog);
+    for (const simpleLog of lastNCommits) {
+      const versionLog = await toVersionLog(git, simpleLog);
+      versionLogs.push(versionLog);
     }
 
-    if (currentBranch) await git.checkout(currentBranch);
-    prettyPrint(formatVersionLog(result));
+    if (startingBranch) await git.checkout(startingBranch);
+    prettyPrint(versionLogs);
   });
 
 program.parse();
