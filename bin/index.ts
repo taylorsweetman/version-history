@@ -21,6 +21,7 @@ program
   .option('-n, --number <int>', 'number of commits to include')
   .action(async (options) => {
     const git = await initGit();
+    const currentBranch = (await git.branch()).current;
     const lastNCommits = await getLastNCommits(git, options.number);
 
     const result: VersionLog[] = [];
@@ -30,7 +31,7 @@ program
       result.push(versionLog);
     }
 
-    await git.checkout('master');
+    if (currentBranch) await git.checkout(currentBranch);
     prettyPrint(formatVersionLog(result));
   });
 
